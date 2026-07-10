@@ -1,6 +1,7 @@
 const form = document.getElementById('form');
 const textInput = document.getElementById('text');
 const amountInput = document.getElementById('amount');
+const categoryInput = document.getElementById('category');
 const transactionsList = document.getElementById('transactions');
 const balanceEl = document.getElementById('balance');
 const incomeEl = document.getElementById('income');
@@ -19,7 +20,8 @@ function addTransaction(e) {
   const transaction = {
     id: Date.now(),
     text,
-    amount
+    amount,
+    category: categoryInput.value
   };
 
   transactions.push(transaction);
@@ -41,9 +43,20 @@ function renderTransactions() {
     const li = document.createElement('li');
     li.classList.add(t.amount > 0 ? 'income' : 'expense');
     li.innerHTML = `
-      ${t.text} <span>${t.amount > 0 ? '+' : ''}₹${Math.abs(t.amount)}</span>
-      <button
-    `;
+<div>
+<strong>${t.text}</strong>
+<br>
+<small>${t.category}</small>
+</div>
+
+<div>
+<span>${t.amount>0?'+':'-'}₹${Math.abs(t.amount)}</span>
+
+<button onclick="deleteTransaction(${t.id})">
+Delete
+</button>
+</div>
+`;
     transactionsList.appendChild(li);
   });
 
