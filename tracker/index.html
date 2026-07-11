@@ -1,60 +1,272 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>Expense Tracker</title>
-  <link rel="stylesheet" href="src/style.css" />
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Expense Tracker Dashboard</title>
+
+    <link rel="stylesheet"
+          href="src/style.css">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
 </head>
+
 <body>
 
-  
-  <div class="container">
-    <h2>Expense Tracker</h2>
+<div class="container">
 
-    <div id="loginBox">
+<!---------------- LOGIN ---------------->
 
-  <h3>Login</h3>
+<div id="loginBox" class="login-card">
 
-  <input 
-    type="text" 
-    id="username" 
-    placeholder="Enter username"
-  >
+<h2>Expense Tracker</h2>
 
-  <button id="loginBtn">
-    Login
-  </button>
+<p>Track your daily income & expenses</p>
 
-  
+<input
+type="text"
+id="username"
+placeholder="Enter Username">
+
+<button id="loginBtn">
+
+Login
+
+</button>
+
 </div>
+
+<!---------------- DASHBOARD ---------------->
 
 <div id="app">
-  <button id="logoutBtn">Logout</button>
-    <div class="summary">
-      <p>Balance: <span id="balance">₹0.00</span></p>
-      <p>Income: <span id="income">₹0.00</span></p>
-      <p>Expense: <span id="expense">₹0.00</span></p>
-    </div>
 
-    <form id="form">
-      <input type="text" id="text" placeholder="Description" required />
-      <input type="number" id="amount" placeholder="Amount (+/-)" required />
-      <select id="category">
-        <option value="Food">Food</option>
-        <option value="Travel">Travel</option>
-        <option value="Shopping">Shopping</option>
-        <option value="Salary">Salary</option>
-        <option value="Other">Other</option>
-      </select>
-      <button type="submit">Add Transaction</button>
-    </form>
+<header>
 
-    <button id="exportBtn">Export CSV</button>
-    <ul id="transactions" class="list"></ul>
-  </div>
+<div>
+
+<h1>Expense Tracker</h1>
+
+<p>Manage your personal finances easily</p>
+
 </div>
 
-  <script src="src/main.js"></script>
+<div class="header-right">
+
+<div class="user">
+
+<div class="avatar">
+
+👤
+
+</div>
+
+<span id="userName">
+
+User
+
+</span>
+
+</div>
+
+<button id="logoutBtn">
+
+Logout
+
+</button>
+
+</div>
+
+</header>
+
+<!---------------- SUMMARY ---------------->
+
+<div class="cards">
+
+<div class="card balance">
+
+<h3>Total Balance</h3>
+
+<h2 id="balance">
+
+₹0.00
+
+</h2>
+
+</div>
+
+<div class="card income">
+
+<h3>Income</h3>
+
+<h2 id="income">
+
+₹0.00
+
+</h2>
+
+</div>
+
+<div class="card expense">
+
+<h3>Expense</h3>
+
+<h2 id="expense">
+
+₹0.00
+
+</h2>
+
+</div>
+
+</div>
+
+<!---------------- ADD FORM ---------------->
+
+<div class="form-card">
+
+<h2>
+
+Add Transaction
+
+</h2>
+
+<form id="form">
+
+<input
+type="text"
+id="text"
+placeholder="Description"
+required>
+
+<input
+type="number"
+id="amount"
+placeholder="Amount (+/-)"
+required>
+
+<select id="category">
+
+<option value="Food">Food</option>
+
+<option value="Travel">Travel</option>
+
+<option value="Shopping">Shopping</option>
+
+<option value="Salary">Salary</option>
+
+<option value="Other">Other</option>
+
+</select>
+
+<button type="submit">
+
+Add Transaction
+
+</button>
+
+</form>
+
+</div>
+
+<!---------------- SEARCH ---------------->
+
+<div class="tools">
+
+<input
+type="text"
+id="search"
+placeholder="Search Transaction...">
+
+<select id="filter">
+
+<option value="all">
+
+All
+
+</option>
+
+<option value="income">
+
+Income
+
+</option>
+
+<option value="expense">
+
+Expense
+
+</option>
+
+</select>
+
+</div>
+
+<!---------------- ACTION BUTTONS ---------------->
+
+<div class="actions">
+
+<button id="exportBtn">
+
+Export CSV
+
+</button>
+
+<button id="clearBtn">
+
+Clear History
+
+</button>
+
+<button id="themeBtn">
+
+🌙 Dark Mode
+
+</button>
+
+</div>
+
+<!---------------- TRANSACTIONS ---------------->
+
+<div class="transaction-card">
+
+<h2>
+
+Transactions
+
+</h2>
+
+<ul
+id="transactions"
+class="list">
+
+</ul>
+
+</div>
+
+<footer>
+    Designed & Developed by <strong>Aafrin Kashis</strong> | Expense Tracker Dashboard © 2026
+</footer>
+
+</div>
+
+</div>
+
+<script src="src/main.js"></script>
+
 </body>
+
 </html>

@@ -1,3 +1,8 @@
+// ==========================
+// SELECT ELEMENTS
+// ==========================
+
+
 const loginBox = document.getElementById("loginBox");
 
 const usernameInput = document.getElementById("username");
@@ -7,178 +12,104 @@ const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 
 const app = document.getElementById("app");
-const form = document.getElementById('form');
-const textInput = document.getElementById('text');
-const amountInput = document.getElementById('amount');
-const categoryInput = document.getElementById('category');
-const transactionsList = document.getElementById('transactions');
-const balanceEl = document.getElementById('balance');
-const incomeEl = document.getElementById('income');
-const expenseEl = document.getElementById('expense');
-const exportBtn = document.getElementById('exportBtn');
-
-let currentUser = localStorage.getItem("currentUser");
 
 
-let transactions = currentUser 
-? JSON.parse(localStorage.getItem(currentUser)) || []
-: [];
-let previousBalance = 0;
+const form = document.getElementById("form");
 
-function addTransaction(e) {
-  e.preventDefault();
+const textInput = document.getElementById("text");
 
-  const text = textInput.value.trim();
-  const amount = +amountInput.value;
+const amountInput = document.getElementById("amount");
 
-  if (!text || !amount) return;
-
-  const transaction = {
-
-  id: Date.now(),
-
-  text,
-
-  amount,
-
-  category: categoryInput.value
-
-};
-
-  transactions.push(transaction);
-  updateLocalStorage();
-  renderTransactions();
-  form.reset();
-}
-
-function deleteTransaction(id) {
-  transactions = transactions.filter(t => t.id !== id);
-  updateLocalStorage();
-  renderTransactions();
-}
-
-function renderTransactions() {
-  transactionsList.innerHTML = '';
-
-  transactions.forEach(t => {
-    const li = document.createElement('li');
-    li.classList.add(t.amount > 0 ? 'income' : 'expense');
-    li.innerHTML = `
-  <div>
-    <strong>${t.text}</strong>
-    <br>
-    <small>${t.category}</small>
-  </div>
-
-  <div>
-    <span>
-      ${t.amount > 0 ? '+' : '-'}₹${Math.abs(t.amount)}
-    </span>
-
-    <button onclick="deleteTransaction(${t.id})">
-      Delete
-    </button>
-  </div>
-`;
-    transactionsList.appendChild(li);
-  });
-
-  updateSummary();
-}
-
-function exportCSV() {
-
-  if (transactions.length === 0) {
-    alert("No transactions available");
-    return;
-  }
+const categoryInput = document.getElementById("category");
 
 
-  let csv = "Description,Amount,Category\n";
+const transactionsList =
+document.getElementById("transactions");
 
 
-  transactions.forEach(transaction => {
-
-    csv += `${transaction.text},${transaction.amount},${transaction.category}\n`;
-
-  });
+const balanceEl =
+document.getElementById("balance");
 
 
-  const blob = new Blob([csv], {
-    type: "text/csv"
-  });
+const incomeEl =
+document.getElementById("income");
 
 
-  const url = URL.createObjectURL(blob);
+const expenseEl =
+document.getElementById("expense");
 
 
-  const link = document.createElement("a");
-
-  link.href = url;
-
-  link.download = "expense-report.csv";
+const exportBtn =
+document.getElementById("exportBtn");
 
 
-  link.click();
+const searchInput =
+document.getElementById("search");
 
-}
 
-exportBtn.addEventListener("click", exportCSV);
+const filterInput =
+document.getElementById("filter");
 
-function updateSummary() {
-  const amounts = transactions.map(t => t.amount);
-  const total = amounts.reduce((acc, amt) => acc + amt, 0).toFixed(2);
-  const income = amounts.filter(a => a > 0).reduce((acc, val) => acc + val, 0).toFixed(2);
-  const expense = amounts.filter(a => a < 0).reduce((acc, val) => acc + val, 0).toFixed(2);
 
-  balanceEl.textContent = `₹${total}`;
-  const currentBalance = Number(total);
+const clearBtn =
+document.getElementById("clearBtn");
 
-balanceEl.classList.remove("balance-up", "balance-down");
 
-if (currentBalance > previousBalance) {
-  balanceEl.classList.add("balance-up");
-} else if (currentBalance < previousBalance) {
-  balanceEl.classList.add("balance-down");
-}
+const themeBtn =
+document.getElementById("themeBtn");
 
-setTimeout(() => {
-  balanceEl.classList.remove("balance-up", "balance-down");
-}, 500);
 
-previousBalance = currentBalance;
-  incomeEl.textContent = `₹${income}`;
-  expenseEl.textContent = `₹${Math.abs(expense)}`;
-}
+const userName =
+document.getElementById("userName");
 
-function updateLocalStorage(){
 
-localStorage.setItem(
-currentUser,
-JSON.stringify(transactions)
-);
 
-}
+// ==========================
+// LOCAL STORAGE
+// ==========================
 
-form.addEventListener('submit', addTransaction);
+
+let currentUser =
+localStorage.getItem("currentUser");
+
+
+let transactions =
+currentUser
+?
+JSON.parse(localStorage.getItem(currentUser)) || []
+:
+[];
+
+
+
+// ==========================
+// LOGIN
+// ==========================
 
 
 loginBtn.addEventListener("click",()=>{
 
 
-let username = usernameInput.value.trim();
+let username =
+usernameInput.value.trim();
+
 
 
 if(username===""){
- alert("Enter username");
- return;
+
+alert("Enter username");
+
+return;
+
 }
+
 
 
 localStorage.setItem(
 "currentUser",
 username
 );
+
 
 
 currentUser=username;
@@ -188,16 +119,52 @@ transactions =
 JSON.parse(localStorage.getItem(username)) || [];
 
 
+
 loginBox.style.display="none";
 
 
 app.style.display="block";
 
 
+userName.innerText=username;
+
+
 renderTransactions();
 
 
+
 });
+
+
+
+// ==========================
+// AUTO LOGIN
+// ==========================
+
+
+if(currentUser){
+
+
+loginBox.style.display="none";
+
+
+app.style.display="block";
+
+
+userName.innerText=currentUser;
+
+
+renderTransactions();
+
+
+}
+
+
+
+// ==========================
+// LOGOUT
+// ==========================
+
 
 logoutBtn.addEventListener("click",()=>{
 
@@ -212,12 +179,583 @@ location.reload();
 
 });
 
-if(currentUser){
 
-loginBox.style.display="none";
 
-app.style.display="block";
+// ==========================
+// ADD TRANSACTION
+// ==========================
+
+
+form.addEventListener(
+"submit",
+function(e){
+
+
+e.preventDefault();
+
+
+
+let text =
+textInput.value.trim();
+
+
+let amount =
+Number(amountInput.value);
+
+
+
+if(text==="" || amount===0){
+
+alert("Enter valid details");
+
+return;
+
+}
+
+
+
+const transaction={
+
+
+id:Date.now(),
+
+
+text:text,
+
+
+amount:amount,
+
+
+category:
+categoryInput.value,
+
+
+date:
+new Date().toLocaleDateString()
+
+
+};
+
+
+
+transactions.push(transaction);
+
+
+
+saveData();
+
 
 renderTransactions();
+
+
+form.reset();
+
+
+showToast(
+"Transaction Added Successfully"
+);
+
+
+
+});
+
+
+
+
+// ==========================
+// DISPLAY TRANSACTIONS
+// ==========================
+
+
+function renderTransactions(){
+
+
+transactionsList.innerHTML="";
+
+
+
+let search =
+searchInput.value.toLowerCase();
+
+
+
+let filter =
+filterInput.value;
+
+
+
+let filtered =
+transactions.filter(t=>{
+
+
+let matchSearch =
+t.text
+.toLowerCase()
+.includes(search);
+
+
+
+let matchFilter =
+
+filter==="all"
+||
+(filter==="income" && t.amount>0)
+||
+(filter==="expense" && t.amount<0);
+
+
+
+return matchSearch && matchFilter;
+
+
+});
+
+
+
+
+if(filtered.length===0){
+
+
+transactionsList.innerHTML=
+`
+<li class="empty">
+
+No Transactions Found
+
+</li>
+`;
+
+return;
+
+}
+
+
+
+
+filtered.forEach(t=>{
+
+
+const li =
+document.createElement("li");
+
+
+
+li.className =
+t.amount>0
+?
+"income"
+:
+"expense";
+
+
+
+li.innerHTML=
+
+`
+
+<div>
+
+
+<strong>
+
+${t.text}
+
+</strong>
+
+
+<br>
+
+
+<small>
+
+${t.category}
+
+</small>
+
+
+<br>
+
+
+<small>
+
+${t.date}
+
+</small>
+
+
+</div>
+
+
+
+<div>
+
+
+<span>
+
+${t.amount>0?"+":"-"}
+₹${Math.abs(t.amount)}
+
+</span>
+
+
+
+<button onclick="deleteTransaction(${t.id})">
+
+Delete
+
+</button>
+
+
+</div>
+
+`;
+
+
+
+transactionsList.appendChild(li);
+
+
+
+});
+
+
+
+updateSummary();
+
+
+
+}
+
+
+
+// ==========================
+// DELETE
+// ==========================
+
+
+function deleteTransaction(id){
+
+
+transactions =
+transactions.filter(
+t=>t.id!==id
+);
+
+
+
+saveData();
+
+
+renderTransactions();
+
+
+showToast(
+"Transaction Deleted"
+);
+
+
+}
+
+
+
+
+// ==========================
+// SUMMARY
+// ==========================
+
+
+function updateSummary(){
+
+
+
+let income =
+transactions
+.filter(t=>t.amount>0)
+.reduce(
+(sum,t)=>sum+t.amount,
+0
+);
+
+
+
+let expense =
+transactions
+.filter(t=>t.amount<0)
+.reduce(
+(sum,t)=>sum+t.amount,
+0
+);
+
+
+
+let balance =
+income+expense;
+
+
+
+balanceEl.innerText=
+`₹${balance.toFixed(2)}`;
+
+
+
+incomeEl.innerText=
+`₹${income.toFixed(2)}`;
+
+
+
+expenseEl.innerText=
+`₹${Math.abs(expense).toFixed(2)}`;
+
+
+
+}
+
+
+
+// ==========================
+// SAVE DATA
+// ==========================
+
+
+function saveData(){
+
+
+localStorage.setItem(
+
+currentUser,
+
+JSON.stringify(transactions)
+
+);
+
+
+}
+
+
+
+// ==========================
+// SEARCH
+// ==========================
+
+
+searchInput.addEventListener(
+"input",
+renderTransactions
+);
+
+
+
+// ==========================
+// FILTER
+// ==========================
+
+
+filterInput.addEventListener(
+"change",
+renderTransactions
+);
+
+
+
+// ==========================
+// CLEAR HISTORY
+// ==========================
+
+
+clearBtn.addEventListener(
+"click",
+()=>{
+
+
+if(
+confirm(
+"Delete all transactions?"
+)
+){
+
+
+transactions=[];
+
+
+saveData();
+
+
+renderTransactions();
+
+
+showToast(
+"History Cleared"
+);
+
+
+}
+
+
+});
+
+
+
+// ==========================
+// EXPORT CSV
+// ==========================
+
+
+exportBtn.addEventListener(
+"click",
+()=>{
+
+
+if(transactions.length===0){
+
+alert(
+"No data available"
+);
+
+return;
+
+}
+
+
+
+let csv=
+"Description,Amount,Category,Date\n";
+
+
+
+transactions.forEach(t=>{
+
+
+csv +=
+`${t.text},${t.amount},${t.category},${t.date}\n`;
+
+
+});
+
+
+
+let blob =
+new Blob(
+[csv],
+{
+type:"text/csv"
+}
+);
+
+
+
+let url =
+URL.createObjectURL(blob);
+
+
+
+let link =
+document.createElement("a");
+
+
+link.href=url;
+
+
+link.download=
+"expense-report.csv";
+
+
+link.click();
+
+
+});
+
+
+
+// ==========================
+// DARK MODE
+// ==========================
+
+
+themeBtn.addEventListener(
+"click",
+()=>{
+
+
+document.body.classList.toggle(
+"dark-mode"
+);
+
+
+
+if(
+document.body.classList.contains(
+"dark-mode"
+)
+){
+
+themeBtn.innerText=
+"☀️ Light Mode";
+
+
+}
+
+else{
+
+
+themeBtn.innerText=
+"🌙 Dark Mode";
+
+
+}
+
+
+
+});
+
+
+
+
+// ==========================
+// TOAST MESSAGE
+// ==========================
+
+
+function showToast(message){
+
+
+let toast =
+document.createElement("div");
+
+
+
+toast.innerText=message;
+
+
+toast.style.position="fixed";
+
+toast.style.bottom="30px";
+
+toast.style.right="30px";
+
+toast.style.background="#2563eb";
+
+toast.style.color="white";
+
+toast.style.padding="15px 20px";
+
+toast.style.borderRadius="10px";
+
+toast.style.zIndex="999";
+
+
+
+document.body.appendChild(toast);
+
+
+
+setTimeout(()=>{
+
+
+toast.remove();
+
+
+},2000);
+
+
 
 }
