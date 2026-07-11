@@ -70,3 +70,17 @@ button {
 .list li.expense {
   border-color: #ef4444;
 }
+
+#loginBox{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+#loginBox input{
+  flex:1;
+}
+
+#loginBtn{
+  background:#16a34a;
+}
