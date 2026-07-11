@@ -35,10 +35,6 @@ input {
   padding: 0.5rem;
 }
 
-select{
-  padding:0.5rem;
-}
-
 button {
   padding: 0.5rem;
   background: #2563eb;
@@ -47,6 +43,11 @@ button {
   cursor: pointer;
 }
 
+#logoutBtn{
+  position: relative;
+  left: 340px;
+  top: -40px;
+}
 .list {
   list-style: none;
   padding: 0;
@@ -71,16 +72,55 @@ button {
   border-color: #ef4444;
 }
 
-#loginBox{
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
+select {
+  padding: 0.5rem;
 }
 
-#loginBox input{
-  flex:1;
+#exportBtn {
+  margin-top: 10px;
+  padding: 0.5rem;
+  background: #16a34a;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
 
-#loginBtn{
-  background:#16a34a;
+#exportBtn:hover {
+  opacity: 0.8;
+}
+
+#app{
+  display:none;
+}
+
+#balance,
+#income,
+#expense {
+  transition: all 0.15s ease;
+}
+
+.balance-up {
+  color: green;
+  transform: scale(5.2);
+}
+
+.balance-down {
+  color: red;
+  transform: scale(5.2);
+}
+
+.list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list li button {
+  margin-left: 10px;
+  background: red;
+  color: white;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
 }

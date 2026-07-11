@@ -1,3 +1,12 @@
+const loginBox = document.getElementById("loginBox");
+
+const usernameInput = document.getElementById("username");
+
+const loginBtn = document.getElementById("loginBtn");
+
+const logoutBtn = document.getElementById("logoutBtn");
+
+const app = document.getElementById("app");
 const form = document.getElementById('form');
 const textInput = document.getElementById('text');
 const amountInput = document.getElementById('amount');
@@ -8,7 +17,13 @@ const incomeEl = document.getElementById('income');
 const expenseEl = document.getElementById('expense');
 const exportBtn = document.getElementById('exportBtn');
 
-let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+let currentUser = localStorage.getItem("currentUser");
+
+
+let transactions = currentUser 
+? JSON.parse(localStorage.getItem(currentUser)) || []
+: [];
+let previousBalance = 0;
 
 function addTransaction(e) {
   e.preventDefault();
@@ -19,11 +34,16 @@ function addTransaction(e) {
   if (!text || !amount) return;
 
   const transaction = {
-    id: Date.now(),
-    text,
-    amount,
-    category: categoryInput.value
-  };
+
+  id: Date.now(),
+
+  text,
+
+  amount,
+
+  category: categoryInput.value
+
+};
 
   transactions.push(transaction);
   updateLocalStorage();
@@ -44,25 +64,66 @@ function renderTransactions() {
     const li = document.createElement('li');
     li.classList.add(t.amount > 0 ? 'income' : 'expense');
     li.innerHTML = `
-<div>
-<strong>${t.text}</strong>
-<br>
-<small>${t.category}</small>
-</div>
+  <div>
+    <strong>${t.text}</strong>
+    <br>
+    <small>${t.category}</small>
+  </div>
 
-<div>
-<span>${t.amount>0?'+':'-'}₹${Math.abs(t.amount)}</span>
+  <div>
+    <span>
+      ${t.amount > 0 ? '+' : '-'}₹${Math.abs(t.amount)}
+    </span>
 
-<button onclick="deleteTransaction(${t.id})">
-Delete
-</button>
-</div>
+    <button onclick="deleteTransaction(${t.id})">
+      Delete
+    </button>
+  </div>
 `;
     transactionsList.appendChild(li);
   });
 
   updateSummary();
 }
+
+function exportCSV() {
+
+  if (transactions.length === 0) {
+    alert("No transactions available");
+    return;
+  }
+
+
+  let csv = "Description,Amount,Category\n";
+
+
+  transactions.forEach(transaction => {
+
+    csv += `${transaction.text},${transaction.amount},${transaction.category}\n`;
+
+  });
+
+
+  const blob = new Blob([csv], {
+    type: "text/csv"
+  });
+
+
+  const url = URL.createObjectURL(blob);
+
+
+  const link = document.createElement("a");
+
+  link.href = url;
+
+  link.download = "expense-report.csv";
+
+
+  link.click();
+
+}
+
+exportBtn.addEventListener("click", exportCSV);
 
 function updateSummary() {
   const amounts = transactions.map(t => t.amount);
@@ -71,33 +132,92 @@ function updateSummary() {
   const expense = amounts.filter(a => a < 0).reduce((acc, val) => acc + val, 0).toFixed(2);
 
   balanceEl.textContent = `₹${total}`;
+  const currentBalance = Number(total);
+
+balanceEl.classList.remove("balance-up", "balance-down");
+
+if (currentBalance > previousBalance) {
+  balanceEl.classList.add("balance-up");
+} else if (currentBalance < previousBalance) {
+  balanceEl.classList.add("balance-down");
+}
+
+setTimeout(() => {
+  balanceEl.classList.remove("balance-up", "balance-down");
+}, 500);
+
+previousBalance = currentBalance;
   incomeEl.textContent = `₹${income}`;
   expenseEl.textContent = `₹${Math.abs(expense)}`;
 }
 
-function updateLocalStorage() {
-  localStorage.setItem('transactions', JSON.stringify(transactions));
-}
+function updateLocalStorage(){
 
-function exportCSV() {
-
-  let csv = "Description,Category,Amount\n";
-
-  transactions.forEach(t => {
-    csv += `${t.text},${t.category},${t.amount}\n`;
-  });
-
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-
-  a.href = url;
-  a.download = "Expense_Report.csv";
-  a.click();
-  URL.revokeObjectURL(url);
+localStorage.setItem(
+currentUser,
+JSON.stringify(transactions)
+);
 
 }
 
 form.addEventListener('submit', addTransaction);
-exportBtn.addEventListener("click", exportCSV);
+
+
+loginBtn.addEventListener("click",()=>{
+
+
+let username = usernameInput.value.trim();
+
+
+if(username===""){
+ alert("Enter username");
+ return;
+}
+
+
+localStorage.setItem(
+"currentUser",
+username
+);
+
+
+currentUser=username;
+
+
+transactions =
+JSON.parse(localStorage.getItem(username)) || [];
+
+
+loginBox.style.display="none";
+
+
+app.style.display="block";
+
+
 renderTransactions();
+
+
+});
+
+logoutBtn.addEventListener("click",()=>{
+
+
+localStorage.removeItem(
+"currentUser"
+);
+
+
+location.reload();
+
+
+});
+
+if(currentUser){
+
+loginBox.style.display="none";
+
+app.style.display="block";
+
+renderTransactions();
+
+}
