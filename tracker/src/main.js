@@ -6,6 +6,7 @@ const transactionsList = document.getElementById('transactions');
 const balanceEl = document.getElementById('balance');
 const incomeEl = document.getElementById('income');
 const expenseEl = document.getElementById('expense');
+const exportBtn = document.getElementById('exportBtn');
 
 let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
@@ -78,5 +79,25 @@ function updateLocalStorage() {
   localStorage.setItem('transactions', JSON.stringify(transactions));
 }
 
+function exportCSV() {
+
+  let csv = "Description,Category,Amount\n";
+
+  transactions.forEach(t => {
+    csv += `${t.text},${t.category},${t.amount}\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "Expense_Report.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+
+}
+
 form.addEventListener('submit', addTransaction);
+exportBtn.addEventListener("click", exportCSV);
 renderTransactions();
